@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2019 by bobyang9 (http://jsbin.com/vidiveq/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html lang = "en">
+    
+    <head>
+        <meta name="description" content="page name">
+        <meta charset = "UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <title>JS Bin</title>
+    <style id="jsbin-css">
+body{
+    font-family: "Helvetica Neue";
+    font-weight: 300;
+}
+
+h1{
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+#button{
+    background-color: #bbddff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    width: 95vw;
+    height: 3rem;
+    margin-left: 1.5vw;
+    margin-right: 1.5vw;
+    font-size: 20px;
+    font-weight: 200;
+}
+
+#button:hover {
+  background-color: #77bbff;
+  color: white;
+}
+
+#button:active {
+  background-color: #3399ff;
+}
+
+#hi{
+    text-align: center;
+    line-height: 1;
+}
+
+.flex{
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.flex2{
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+}
+
+button{
+    background: rgb(255, 214, 214);
+    border: none;
+    border-radius: 5px;
+    padding-top: 5px;
+    text-align: center;
+    width: 25vw;
+    height: 3rem;
+    margin-left: 1.5vw;
+    margin-right: 1.5vw;
+    margin-bottom: 2vh;
+    font-size: 20px;
+    font-weight: 200;
+}
+
+.remover{
+    width: 10vw;
+    background: rgb(255, 230, 230);
+}
+
+section > button:hover{
+    background-color: #77bbff;
+    color: white;
+}
+
+textarea{
+    width: 55vw;
+    border: 1px solid rgb(230, 230, 230);
+    background: rgb(230, 255, 230);
+    border-radius: 5px;
+    font-family: "Helvetica Neue";
+    font-weight: 200;
+    font-size: 20px;
+    padding-left: 10px;
+    padding-top: 13px;
+    margin-bottom: 10px;
+    height: 1.95rem;
+}
+
+#num_items_done, #num_items_made{
+    margin-left: 1.5vw;
+    font-size: 20px;
+}
+
+#checkbox1{
+    margin-left: 1.5vw;
+    margin-right: 1.5vw;
+    font-size: 20px;
+}
+#cbspan1{
+    font-size: 20px;
+    position: absolute;
+}
+
+
+
+
+</style>
+</head>
+    
+    <body>
+        <h1> To Do List </h1>
+        <section class = "flex" id = "hi">
+            
+        </section>
+        <button id = "button" onclick="myFunction()"> Add a new item to list </button>
+        <p id = "num_items_done"> Number of items done (all time): <span id = "num_items_done_span">0</span></p>
+        <p id = "num_items_made"> Number of items made: <span id = "num_items_made_span">0</span> </p>
+        <input type = "checkbox" onclick = "checkboxFunction()" id = "checkbox1"> <span id = "cbspan1">Check for no default text</span></input>
+    <script id="jsbin-javascript">
+var idNumber = 1;
+var allTimeMarkedDoneCount = 0;
+var numItemsMade = 0;
+var statusArray = [];
+var defaultTextFiller = "Insert text here";
+
+
+function myFunction()
+{
+    // Make a flexbox p with class flex2 and id sectionIdNumber
+    var p = document.createElement("section");
+    p.setAttribute("class", "flex2");
+    p.setAttribute("id", "section"+idNumber);
+    
+    // Make a button b that shows the status Done or Not Done, with id statusIdNumber and class status. If clicked, b runs myFunction2 and passes its id in. It has text "Not Done" and is a child of flexbox p.
+    var b = document.createElement("button");
+    b.setAttribute("id", "status"+idNumber);
+    b.setAttribute("class", "status")
+    b.setAttribute("onclick", "myFunction2(this.id)");
+    var t1 = document.createTextNode("Not Done");
+    b.appendChild(t1);
+    p.appendChild(b);
+    //this pushes the status of the new button (default "Not Done") to the status array (responsible for toggling the two states)
+    statusArray.push("Not Done");
+    
+    // Make a textarea txt with default text "Insert text here", and it is a child of flexbox p
+    var txt = document.createElement("textarea");
+    var t2 = document.createTextNode(defaultTextFiller);
+    txt.appendChild(t2);
+    p.appendChild(txt);
+    
+    // Make a button b2 with id removerIdNumber and class remover. If clicked, b2 runs myFunction3 and passes its id in. It has text "x" (the deletion button) and is a child of flexbox p.
+    var b2 = document.createElement("button");
+    b2.setAttribute("id", "remover"+idNumber);
+    b2.setAttribute("class", "remover");
+    b2.setAttribute("onclick", "myFunction3(this.id)");
+    var t3 = document.createTextNode("x");
+    b2.appendChild(t3);
+    p.appendChild(b2);
+    //increment id number so each p has a different id number
+    idNumber = idNumber + 1;
+    document.getElementById("hi").appendChild(p);
+    
+    //Increase "num items made"
+    numItemsMade = numItemsMade + 1;
+    document.getElementById("num_items_made_span").innerHTML = numItemsMade;
+}
+
+function myFunction2(clicked_id)
+{
+    //Get the id of the button that triggered it, and turn it green
+    if(statusArray[clicked_id.match(/\d+/)[0]-1] == "Not Done")
+    {
+        document.getElementById(clicked_id).style.backgroundColor = "#d6ffd6";
+        document.getElementById(clicked_id).innerHTML = "Done";
+        statusArray[clicked_id.match(/\d+/)[0]-1] = "Done";
+        allTimeMarkedDoneCount++;
+        document.getElementById("num_items_done_span").innerHTML = allTimeMarkedDoneCount;
+    }
+    else
+    {
+        document.getElementById(clicked_id).style.backgroundColor = "#ffd6d6";
+        document.getElementById(clicked_id).innerHTML = "Not Done";
+        statusArray[clicked_id.match(/\d+/)[0]-1] = "Not Done";
+    }
+        
+    
+}
+
+function myFunction3(clicked_id)
+{
+    var parent = document.getElementById("hi");
+    var child = document.getElementById(clicked_id).parentNode;
+    parent.removeChild(child);
+}
+
+function checkboxFunction()
+{
+    var checkbox1 = document.getElementById("checkbox1");
+    if(checkbox1.checked === true)
+    {
+        defaultTextFiller = "";
+    }
+    else
+    {
+        defaultTextFiller = "Insert text here";
+    }
+}
+
+
+
+
+
+</script>
+</body>
+  
+</html>
